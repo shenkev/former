@@ -59,7 +59,7 @@ def profile_model_weights(model):
 
         """.format(*[round(1e-6*profile_parameters(x), 4) for x in [
             model, model.toprobs, model.tblocks, model.tblocks[0],
-             model.tblocks[0].attention, model.tlayers[0].ff]]))
+             model.tblocks[0].attention, model.tblocks[0].ff]]))
 
 def estimate_memory_usage(b, t, k, h, nlayers, mlp_z, bytes_per_param=4):
 
