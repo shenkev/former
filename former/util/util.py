@@ -1,4 +1,4 @@
-import torch, os
+import torch, os, errno
 
 def mask_(matrices, maskval=0.0, mask_diagonal=True):
     """
@@ -95,6 +95,12 @@ def estimate_memory_usage(b, t, k, h, nlayers, mlp_z, bytes_per_param=4):
              block_w*nlayers, block_z*nlayers]]))
 
 def fprint(content, fpath):
+    if not os.path.exists(os.path.dirname(fpath)):
+        try:
+            os.makedirs(os.path.dirname(fpath))
+        except OSError as exc: # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
     with open(fpath, "w") as f:
        f.write(content)
     print(content)
