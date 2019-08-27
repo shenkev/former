@@ -65,7 +65,7 @@ def go(arg):
 
     # log/estimate parameters
     fprint(estimate_memory_usage(
-        arg.batch_size, arg.max_length, arg.embedding_size, arg.heads, arg.depth, arg.ff_hidden_mult
+        arg.batch_size, arg.max_length, arg.embedding_size, arg.num_heads, arg.depth, arg.ff_hidden_mult
     ), "{}/param_estimates.txt".format(arg.tb_dir))
     fprint(profile_model_weights(model), "{}/model_weights.txt".format(arg.tb_dir))
 

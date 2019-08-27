@@ -58,8 +58,8 @@ def profile_model_weights(model):
             MLP module: {}M
 
         """.format(*[round(1e-6*profile_parameters(x), 4) for x in [
-            model, model.out, model.tlayers, model.tlayers[0],
-             model.tlayers[0].self_att, model.tlayers[0].mlp]]))
+            model, model.toprobs, model.tblocks, model.tblocks[0],
+             model.tblocks[0].attention, model.tlayers[0].ff]]))
 
 def estimate_memory_usage(b, t, k, h, nlayers, mlp_z, bytes_per_param=4):
 
