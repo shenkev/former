@@ -1,5 +1,5 @@
 {
-    "tb_dir": "./runs/default",
+    "tb_dir": "./runs/singlehead",
     "num_epochs": 15,
     "batch_size": 4,
     "lr": 0.0001,

@@ -65,7 +65,7 @@ def go(arg):
 
     # log/estimate parameters
     fprint(estimate_memory_usage(
-        arg.batchsize, arg.max_length, arg.embedding_size, arg.heads, arg.depth, arg.ff_hidden_mult
+        arg.batch_size, arg.max_length, arg.embedding_size, arg.heads, arg.depth, arg.ff_hidden_mult
     ), "{}/param_estimates.txt".format(arg.tb_dir))
     fprint(profile_model_weights(model), "{}/model_weights.txt".format(arg.tb_dir))
 
@@ -125,7 +125,7 @@ def go(arg):
 
             acc = cor / tot
             print(f'-- {"test" if arg.final else "validation"} accuracy {acc:.3}')
-            tbw.add_scalar('classification/test-loss', float(loss.item()), e)
+            tbw.add_scalar('classification/test-acc', float(acc), e)
 
 
 if __name__ == "__main__":
@@ -141,6 +141,6 @@ if __name__ == "__main__":
 
     opt = Bunch(json.load(open(args.exp_json, 'r')))
 
-    fprint("OPTIONS: {}".format(opt), "{}/opts.txt".format(opt.tb_dir))
+    fprint("OPTIONS: {}".format(opt.__dict__), "{}/opts.txt".format(opt.tb_dir))
 
     go(opt)
