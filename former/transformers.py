@@ -49,7 +49,7 @@ class CTransformer(nn.Module):
     Transformer for classifying sequences
     """
 
-    def __init__(self, emb, heads, depth, seq_length, num_tokens, num_classes, max_pool=True, dropout=0.0):
+    def __init__(self, emb, heads, depth, seq_length, ff_hidden_mult, num_tokens, num_classes, max_pool=True, dropout=0.0):
         """
         :param emb: Embedding dimension
         :param heads: nr. of attention heads
@@ -70,7 +70,7 @@ class CTransformer(nn.Module):
         tblocks = []
         for i in range(depth):
             tblocks.append(
-                TransformerBlock(emb=emb, heads=heads, seq_length=seq_length, mask=False, dropout=dropout))
+                TransformerBlock(emb=emb, heads=heads, ff_hidden_mult=ff_hidden_mult, seq_length=seq_length, mask=False, dropout=dropout))
 
         self.tblocks = nn.Sequential(*tblocks)
 
