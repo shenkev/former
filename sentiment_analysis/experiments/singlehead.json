@@ -1,0 +1,17 @@
+{
+    "tb_dir": "./runs/default",
+    "num_epochs": 15,
+    "batch_size": 4,
+    "lr": 0.0001,
+    "final": true,
+    "max_pool": true,
+    "embedding_size": 128,
+    "vocab_size": 50000,
+    "max_length": 512,
+    "num_heads": 1,
+    "depth": 6,
+    "ff_hidden_mult": 4,
+    "seed": 1,
+    "lr_warmup": 10000,
+    "gradient_clipping": 1.0
+}

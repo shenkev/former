@@ -7,7 +7,7 @@
     "max_pool": true,
     "embedding_size": 128,
     "vocab_size": 50000,
-    "max_length": 512,
+    "max_length": 256,
     "num_heads": 8,
     "depth": 6,
     "ff_hidden_mult": 4,

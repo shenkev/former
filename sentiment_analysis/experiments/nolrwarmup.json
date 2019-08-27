@@ -12,6 +12,6 @@
     "depth": 6,
     "ff_hidden_mult": 4,
     "seed": 1,
-    "lr_warmup": 10000,
+    "lr_warmup": -1,
     "gradient_clipping": 1.0
 }

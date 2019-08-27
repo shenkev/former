@@ -1,7 +1,7 @@
 {
     "tb_dir": "./runs/default",
     "num_epochs": 15,
-    "batch_size": 4,
+    "batch_size": 16,
     "lr": 0.0001,
     "final": true,
     "max_pool": true,
