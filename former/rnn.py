@@ -51,7 +51,7 @@ class GRU(nn.Module):
         hs, hn = self.gru(x)
 
         # extract hidden at last non-pad token
-        x = hs[torch.arange(t, device=d()), lens-1, :]
+        x = hs[torch.arange(b, device=d()), lens-1, :]
         x = self.ff(x)
 
         return F.log_softmax(x, dim=1)

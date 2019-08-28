@@ -95,7 +95,7 @@ def go(arg):
             label = batch.label - 1
 
             if input[0].size(1) > mx:
-                input[0] = input[0][:, :mx]
+                input = (input[0][:, :mx], input[1])
             out = model(input)
             loss = F.nll_loss(out, label)
 
@@ -122,7 +122,7 @@ def go(arg):
                 label = batch.label - 1
 
                 if input[0].size(1) > mx:
-                    input[0] = input[0][:, :mx]
+                    input = (input[0][:, :mx], input[1])
                 out = model(input).argmax(dim=1)
 
                 tot += float(input[0].size(0))
