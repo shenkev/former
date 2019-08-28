@@ -1,5 +1,5 @@
 {
-    "tb_dir": "./runs/rnnbaseline",
+    "tb_dir": "./runs/rnnbidir",
     "baseline": "rnn",
     "num_epochs": 50,
     "batch_size": 4,
@@ -11,8 +11,8 @@
     "max_length": 512,
     "num_heads": 8,
     "depth": 2,
-    "hidden_size": 1024,
-    "dirs": 1,
+    "hidden_size": 2048,
+    "dirs": 2,
     "ff_hidden_mult": 4,
     "seed": 1,
     "lr_warmup": 10000,

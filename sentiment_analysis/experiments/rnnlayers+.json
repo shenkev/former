@@ -1,5 +1,5 @@
 {
-    "tb_dir": "./runs/rnnbaseline",
+    "tb_dir": "./runs/rnnlayers+",
     "baseline": "rnn",
     "num_epochs": 50,
     "batch_size": 4,
@@ -10,8 +10,8 @@
     "vocab_size": 50000,
     "max_length": 512,
     "num_heads": 8,
-    "depth": 2,
-    "hidden_size": 1024,
+    "depth": 4,
+    "hidden_size": 2048,
     "dirs": 1,
     "ff_hidden_mult": 4,
     "seed": 1,
