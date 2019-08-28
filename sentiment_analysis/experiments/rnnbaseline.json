@@ -1,5 +1,6 @@
 {
-    "tb_dir": "./runs/default",
+    "tb_dir": "./runs/rnnbaseline",
+    "baseline": "rnn",
     "num_epochs": 15,
     "batch_size": 4,
     "lr": 0.0001,
@@ -9,10 +10,11 @@
     "vocab_size": 50000,
     "max_length": 512,
     "num_heads": 8,
-    "depth": 6,
+    "depth": 2,
+    "hidden_size": 1024,
+    "dirs": 1,
     "ff_hidden_mult": 4,
     "seed": 1,
     "lr_warmup": 10000,
     "gradient_clipping": 1.0
 }
-

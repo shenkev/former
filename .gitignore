@@ -1,2 +1,4 @@
+/.data
 /runs
 /.vscode
+*__pycache*

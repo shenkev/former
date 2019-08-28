@@ -1,4 +1,5 @@
 from _context import former
+
 from former import util
 
 from util import d, here, Bunch, fprint, estimate_memory_usage, profile_model_weights
@@ -57,17 +58,21 @@ def go(arg):
         mx = arg.max_length
 
     # create the model
-    model = former.CTransformer(emb=arg.embedding_size, heads=arg.num_heads, depth=arg.depth, seq_length=mx,
-     ff_hidden_mult=arg.ff_hidden_mult, num_tokens=arg.vocab_size, num_classes=NUM_CLS, max_pool=arg.max_pool)
+    if hasattr(arg, 'baseline'):
+        if arg.baseline == "rnn":
+            model = former.GRU(emb=arg.embedding_size, depth=arg.depth, hidden_size=arg.hidden_size,
+            seq_length=mx, directions=arg.dirs, num_tokens=arg.vocab_size, num_classes=NUM_CLS)
+    else:
+        model = former.CTransformer(emb=arg.embedding_size, heads=arg.num_heads, depth=arg.depth, seq_length=mx,
+         ff_hidden_mult=arg.ff_hidden_mult, num_tokens=arg.vocab_size, num_classes=NUM_CLS, max_pool=arg.max_pool)
+    
     if torch.cuda.is_available():
         model.cuda()
     opt = torch.optim.Adam(lr=arg.lr, params=model.parameters())
 
     # log/estimate parameters
-    fprint(estimate_memory_usage(
-        arg.batch_size, arg.max_length, arg.embedding_size, arg.num_heads, arg.depth, arg.ff_hidden_mult
-    ), "{}/param_estimates.txt".format(arg.tb_dir))
-    fprint(profile_model_weights(model), "{}/model_weights.txt".format(arg.tb_dir))
+    fprint(estimate_memory_usage(arg), "{}/param_estimates.txt".format(arg.tb_dir))
+    fprint(profile_model_weights(arg, model), "{}/model_weights.txt".format(arg.tb_dir))
 
     # training loop
     seen = 0
@@ -135,7 +140,7 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--experiment",
                         dest="exp_json",
                         help="json file to configurations for experiment",
-                        default="./experiments/default.json", type=str)
+                        default="./sentiment_analysis/experiments/rnnbaseline.json", type=str)
 
     args = parser.parse_args()
 

@@ -45,56 +45,95 @@ def profile_parameters(module):
         params += p.numel()
     return params
 
-def profile_model_weights(model):
+def profile_model_weights(arg, model):
     
-    return (
-        """
-            Model params ------------------
-            Model total: {}M
-            Vocab embedding: {}M
-            POS embedding: {}M
-            Classification layer: {}M
-            Transformers: {}M
-            Single Transformer: {}M
-            Self attention module: {}M
-            MLP module: {}M
+    if hasattr(arg, 'baseline'):
+        if arg.baseline == "rnn":
+            return (
+                """
+                    Model params ------------------
+                    Model total: {}M
+                    Vocab embedding: {}M
+                    RNN: {}M
+                    MLP module: {}M
 
-        """.format(*[round(1e-6*profile_parameters(x), 4) for x in [
-            model, model.token_embedding, model.pos_embedding, model.toprobs, model.tblocks, model.tblocks[0],
-             model.tblocks[0].attention, model.tblocks[0].ff]]))
+                """.format(*[round(1e-6*profile_parameters(x), 4) for x in [
+                    model, model.token_embedding, model.gru, model.ff]]))
+    else:
+        return (
+            """
+                Model params ------------------
+                Model total: {}M
+                Vocab embedding: {}M
+                POS embedding: {}M
+                Classification layer: {}M
+                Transformers: {}M
+                Single Transformer: {}M
+                Self attention module: {}M
+                MLP module: {}M
 
-def estimate_memory_usage(b, t, k, h, nlayers, mlp_z, bytes_per_param=4):
+            """.format(*[round(1e-6*profile_parameters(x), 4) for x in [
+                model, model.token_embedding, model.pos_embedding, model.toprobs, model.tblocks, model.tblocks[0],
+                model.tblocks[0].attention, model.tblocks[0].ff]]))
+
+def estimate_memory_usage(arg, bytes_per_param=4):
 
     BACKWARD_MUL = 2
 
-    btk = b*t*k
+    if hasattr(arg, 'baseline'):
+        if arg.baseline == "rnn":
+            b, i, l, h, t, mlp_z = arg.batch_size, arg.embedding_size, arg.depth, arg.hidden_size, arg.max_length, arg.ff_hidden_mult
+   
+            rnn_w = 3*l*(i*h + h*h + h)
+            rnn_z = b*(3*(t*h*l) + t*i)
+            mlp_w = b*h*h*mlp_z
+            mlp_z = b*h*mlp_z
 
-    mlp_w = 2*(mlp_z*k*k)
-    mlp_z = 3*(mlp_z*btk)
-    ln_z = btk
-    att_w = 4*(h*k*k)
-    att_z = 4*(h*btk) + 2*(btk) + b*h*t*t
+            return (
+            """
+                Estimated Model Size ------------------
+                RNN weights: {}MB
+                RNN activations: {}MB
+                MLP weights: {}MB
+                MLP activations: {}MB
 
-    block_w = mlp_w+att_w
-    block_z = mlp_z+2*ln_z+att_z
+                Total weights: {}MB
+                Total activations: {}MB
+            """.format(*[round(1e-6*bytes_per_param*x, 4) for x in [
+                rnn_w, BACKWARD_MUL*rnn_z, mlp_w, BACKWARD_MUL*mlp_z, rnn_w+mlp_w,
+                BACKWARD_MUL*(rnn_z+mlp_z)]]))
 
-    return (
-        """
-            Estimated Model Size ------------------
-            Self attention weights: {}MB
-            Self attention activations: {}MB
-            MLP weights: {}MB
-            MLP activations: {}MB
-            LayerNorm activations {}MB
+    else:
+        b, t, k, h, nlayers, mlp_z = arg.batch_size, arg.max_length, arg.embedding_size, arg.num_heads, arg.depth, arg.ff_hidden_mult 
 
-            Transformer Block weights: {}MB
-            Transformer Block activations: {}MB
+        btk = b*t*k
 
-            Total weights: {}MB
-            Total activations: {}MB
-        """.format(*[round(1e-6*bytes_per_param*BACKWARD_MUL*x, 4) for x in [
-            att_w, att_z, mlp_w, mlp_z, ln_z, block_w, block_z,
-             block_w*nlayers, block_z*nlayers]]))
+        mlp_w = 2*(mlp_z*k*k)
+        mlp_z = 3*(mlp_z*btk)
+        ln_z = btk
+        att_w = 4*(h*k*k)
+        att_z = 4*(h*btk) + 2*(btk) + b*h*t*t
+
+        block_w = mlp_w+att_w
+        block_z = mlp_z+2*ln_z+att_z
+
+        return (
+            """
+                Estimated Model Size ------------------
+                Self attention weights: {}MB
+                Self attention activations: {}MB
+                MLP weights: {}MB
+                MLP activations: {}MB
+                LayerNorm activations {}MB
+
+                Transformer Block weights: {}MB
+                Transformer Block activations: {}MB
+
+                Total weights: {}MB
+                Total activations: {}MB
+            """.format(*[round(1e-6*bytes_per_param*x, 4) for x in [
+                att_w, BACKWARD_MUL*att_z, mlp_w, BACKWARD_MUL*mlp_z, BACKWARD_MUL*ln_z,
+                block_w, BACKWARD_MUL*block_z, block_w*nlayers, BACKWARD_MUL*block_z*nlayers]]))
 
 def fprint(content, fpath):
     if not os.path.exists(os.path.dirname(fpath)):
