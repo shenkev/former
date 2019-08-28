@@ -91,11 +91,11 @@ def go(arg):
 
             opt.zero_grad()
 
-            input = batch.text[0]
+            input = batch.text
             label = batch.label - 1
 
-            if input.size(1) > mx:
-                input = input[:, :mx]
+            if input[0].size(1) > mx:
+                input[0] = input[0][:, :mx]
             out = model(input)
             loss = F.nll_loss(out, label)
 
@@ -108,7 +108,7 @@ def go(arg):
 
             opt.step()
 
-            seen += input.size(0)
+            seen += input[0].size(0)
             tbw.add_scalar('classification/train-loss', float(loss.item()), seen)
 
         with torch.no_grad():
@@ -118,14 +118,14 @@ def go(arg):
 
             for batch in test_iter:
 
-                input = batch.text[0]
+                input = batch.text
                 label = batch.label - 1
 
-                if input.size(1) > mx:
-                    input = input[:, :mx]
+                if input[0].size(1) > mx:
+                    input[0] = input[0][:, :mx]
                 out = model(input).argmax(dim=1)
 
-                tot += float(input.size(0))
+                tot += float(input[0].size(0))
                 cor += float((label == out).sum().item())
 
             acc = cor / tot

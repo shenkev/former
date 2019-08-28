@@ -83,6 +83,7 @@ class CTransformer(nn.Module):
         :param x: A batch by sequence length integer tensor of token indices.
         :return: predicted log-probability vectors for each token based on the preceding tokens.
         """
+        x, lens = x
         tokens = self.token_embedding(x)
         b, t, e = tokens.size()
 

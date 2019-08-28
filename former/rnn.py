@@ -38,13 +38,14 @@ class GRU(nn.Module):
 
         self.do = nn.Dropout(dropout)
 
-    def forward(self, x, lens):
+    def forward(self, x):
         """
         :param x: A batch by sequence length integer tensor of token indices.
         :return: predicted log-probability vectors for each token based on the preceding tokens.
         """
-        tokens = self.token_embedding(x)
-        b, t, e = tokens.size()
+        x, lens = x
+        x = self.token_embedding(x)
+        b, t, e = x.size()
         x = self.do(x)
 
         hs, hn = self.gru(x)
